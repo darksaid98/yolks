@@ -2,7 +2,7 @@ name: build java
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * 1"
+    - cron: '0 0 * * 1'
   push:
     branches:
       - master
@@ -10,18 +10,18 @@ on:
       - java/**
 jobs:
   push:
-    name: "yolks:java_${{ matrix.tag }}"
+    name: 'yolks:java_${{ matrix.tag }}'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         tag:
           - 8
-#          - 8j9
+          #          - 8j9
           - 11
-#          - 11j9
+          #          - 11j9
           - 16
-#          - 16j9
+          #          - 16j9
           - 17
           - 19
           - 21

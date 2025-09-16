@@ -2,7 +2,7 @@ name: build oses
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * 1"
+    - cron: '0 0 * * 1'
   push:
     branches:
       - master
@@ -10,7 +10,7 @@ on:
       - oses/**
 jobs:
   push:
-    name: "yolks:${{ matrix.oses }}"
+    name: 'yolks:${{ matrix.oses }}'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

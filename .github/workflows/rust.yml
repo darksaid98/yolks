@@ -2,7 +2,7 @@ name: build rust
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * 1"
+    - cron: '0 0 * * 1'
   push:
     branches:
       - master
@@ -10,7 +10,7 @@ on:
       - rust/**
 jobs:
   push:
-    name: "yolks:rust_${{ matrix.tag }}"
+    name: 'yolks:rust_${{ matrix.tag }}'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

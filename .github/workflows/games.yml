@@ -2,7 +2,7 @@ name: build games
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * 1"
+    - cron: '0 0 * * 1'
   push:
     branches:
       - master
@@ -10,7 +10,7 @@ on:
       - games/**
 jobs:
   pushAMD64:
-    name: "games_AMD64:${{ matrix.game }}"
+    name: 'games_AMD64:${{ matrix.game }}'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -43,7 +43,7 @@ jobs:
           tags: |
             ghcr.io/darksaid98/games:${{ matrix.game }}
   pushAll:
-    name: "games_All:${{ matrix.game }}"
+    name: 'games_All:${{ matrix.game }}'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

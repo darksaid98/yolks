@@ -2,7 +2,7 @@ name: build box64
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * 1"
+    - cron: '0 0 * * 1'
   push:
     branches:
       - master
@@ -10,7 +10,7 @@ on:
       - box64/**
 jobs:
   push:
-    name: "yolks:${{ matrix.tag }}"
+    name: 'yolks:${{ matrix.tag }}'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

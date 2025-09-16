@@ -2,7 +2,7 @@ name: build graalvm
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * 1"
+    - cron: '0 0 * * 1'
   push:
     branches:
       - master
@@ -10,7 +10,7 @@ on:
       - graalvm/**
 jobs:
   push:
-    name: "yolks:graalvm_${{ matrix.tag }}"
+    name: 'yolks:graalvm_${{ matrix.tag }}'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

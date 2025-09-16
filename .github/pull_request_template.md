@@ -4,8 +4,8 @@
 
 ### All Submissions:
 
-* [ ] Have you ensured there aren't other open [Pull Requests](../pulls) for the same update or change?
-* [ ] Have you created a new branch for your changes and PR from that branch and not from your master branch?
+- [ ] Have you ensured there aren't other open [Pull Requests](../pulls) for the same update or change?
+- [ ] Have you created a new branch for your changes and PR from that branch and not from your master branch?
 
 <!-- The new image submission below can be removed if you are not adding a new image -->
 

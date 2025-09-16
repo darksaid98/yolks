@@ -2,7 +2,7 @@ name: build steamcmd
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * 1"
+    - cron: '0 0 * * 1'
   push:
     branches:
       - master
@@ -10,7 +10,7 @@ on:
       - steamcmd/**
 jobs:
   push:
-    name: "steamcmd:${{ matrix.distro }}"
+    name: 'steamcmd:${{ matrix.distro }}'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

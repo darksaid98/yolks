@@ -2,7 +2,7 @@ name: build elixir
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * 1"
+    - cron: '0 0 * * 1'
   push:
     branches:
       - master
@@ -10,7 +10,7 @@ on:
       - elixir/**
 jobs:
   push:
-    name: "yolks:elixir_${{ matrix.tag }}"
+    name: 'yolks:elixir_${{ matrix.tag }}'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

@@ -2,7 +2,7 @@ name: build nodejs
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * 1"
+    - cron: '0 0 * * 1'
   push:
     branches:
       - master
@@ -10,7 +10,7 @@ on:
       - nodejs/**
 jobs:
   push:
-    name: "yolks:nodejs_${{ matrix.tag }}"
+    name: 'yolks:nodejs_${{ matrix.tag }}'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
