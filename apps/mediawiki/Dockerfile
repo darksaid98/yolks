@@ -3,7 +3,7 @@ FROM         --platform=$TARGETOS/$TARGETARCH php:8.1-fpm
 LABEL        org.opencontainers.image.source="https://github.com/darksaid98/yolks"
 LABEL        author="darksaid98" maintainer="darksaid9889@gmail.com"
 
-ENV     DEBIAN_FRONTEND noninteractive
+ENV     DEBIAN_FRONTEND=noninteractive
 
 # System dependencies
 RUN set -eux; \

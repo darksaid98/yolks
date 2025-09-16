@@ -5,7 +5,7 @@ LABEL        author="Michael Parker" maintainer="parker@pterodactyl.io"
 LABEL        org.opencontainers.image.source="https://github.com/darksaid98/yolks"
 LABEL        org.opencontainers.image.licenses=MIT
 
-ENV          DEBIAN_FRONTEND noninteractive
+ENV          DEBIAN_FRONTEND=noninteractive
 
 RUN          useradd -m -d /home/container -s /bin/bash container
 

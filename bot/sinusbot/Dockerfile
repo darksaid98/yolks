@@ -3,7 +3,7 @@ FROM        --platform=$TARGETOS/$TARGETARCH debian:bookworm-slim
 LABEL       org.opencontainers.image.authors="i2007@damw.eu"
 LABEL       version="1.0"
 
-ENV         DEBIAN_FRONTEND noninteractive
+ENV         DEBIAN_FRONTEND=noninteractive
 
 # Install Dependencies
 RUN         apt update \

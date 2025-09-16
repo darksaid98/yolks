@@ -1,6 +1,6 @@
 FROM --platform=$TARGETOS/$TARGETARCH golang:1.23.3 AS builder
 
-ENV         DEBIAN_FRONTEND noninteractive
+ENV         DEBIAN_FRONTEND=noninteractive
 
 
 WORKDIR /appbuild/yagpdb
@@ -22,7 +22,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -v -ldflags "-X github.com/botlabs-gg/yagp
 
 FROM --platform=$TARGETOS/$TARGETARCH debian:bookworm-slim
 
-ENV         DEBIAN_FRONTEND noninteractive
+ENV         DEBIAN_FRONTEND=noninteractive
 
 RUN           mkdir -p /usr/bin/
 RUN           mkdir -p /usr/local/bin/
