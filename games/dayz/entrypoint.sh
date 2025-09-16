@@ -7,10 +7,10 @@
 ## License: MIT License
 
 ## === CONSTANTS ===
-STEAMCMD_DIR="./steamcmd"                       # SteamCMD's directory containing steamcmd.sh
-WORKSHOP_DIR="./Steam/steamapps/workshop"       # SteamCMD's directory containing workshop downloads
-STEAMCMD_LOG="${STEAMCMD_DIR}/steamcmd.log"     # Log file for SteamCMD
-GAME_ID=221100                                  # SteamCMD ID for the DayZ GAME (not server). Only used for Workshop mod downloads.
+STEAMCMD_DIR="./steamcmd"                   # SteamCMD's directory containing steamcmd.sh
+WORKSHOP_DIR="./Steam/steamapps/workshop"   # SteamCMD's directory containing workshop downloads
+STEAMCMD_LOG="${STEAMCMD_DIR}/steamcmd.log" # Log file for SteamCMD
+GAME_ID=221100                              # SteamCMD ID for the DayZ GAME (not server). Only used for Workshop mod downloads.
 
 # Color Codes
 CYAN='\033[0;36m'
@@ -33,24 +33,24 @@ function RunSteamCMD { #[Input: int server=0 mod=1; int id]
     if [[ -f "${STEAMCMD_LOG}" ]]; then
         rm -f "${STEAMCMD_LOG:?}"
     fi
-    
+
     updateAttempt=0
-    while (( $updateAttempt < $STEAMCMD_ATTEMPTS )); do # Loop for specified number of attempts
+    while (($updateAttempt < $STEAMCMD_ATTEMPTS)); do # Loop for specified number of attempts
         # Increment attempt counter
-        updateAttempt=$((updateAttempt+1))
-        
-        if (( $updateAttempt > 1 )); then # Notify if not first attempt
+        updateAttempt=$((updateAttempt + 1))
+
+        if (($updateAttempt > 1)); then # Notify if not first attempt
             echo -e "\t${YELLOW}Re-Attempting download/update in 3 seconds...${NC} (Attempt ${CYAN}${updateAttempt}${NC} of ${CYAN}${STEAMCMD_ATTEMPTS}${NC})\n"
             sleep 3
         fi
-        
+
         # Check if updating server or mod
         if [[ $1 == 0 ]]; then # Server
             ${STEAMCMD_DIR}/steamcmd.sh +force_install_dir /home/container "+login \"${STEAM_USER}\" \"${STEAM_PASS}\"" +app_update $2 $extraFlags $validateServer +quit | tee -a "${STEAMCMD_LOG}"
         else # Mod
             ${STEAMCMD_DIR}/steamcmd.sh "+login \"${STEAM_USER}\" \"${STEAM_PASS}\"" +workshop_download_item $GAME_ID $2 +quit | tee -a "${STEAMCMD_LOG}"
         fi
-        
+
         # Error checking for SteamCMD
         steamcmdExitCode=${PIPESTATUS[0]}
         if [[ -n $(grep -i "error\|failed" "${STEAMCMD_LOG}" | grep -iv "setlocal\|SDL\|thread") ]]; then # Catch errors (ignore setlocale, SDL, and thread priority warnings)
@@ -98,7 +98,7 @@ function RunSteamCMD { #[Input: int server=0 mod=1; int id]
             echo -e "\t${YELLOW}(Please contact your administrator/host for support)${NC}\n"
             cp -r /tmp/dumps /home/container/dumps
             exit $steamcmdExitCode
-        else # Success!
+        else                       # Success!
             if [[ $1 == 0 ]]; then # Server
                 echo -e "\n${GREEN}[UPDATE]: Game server is up to date!${NC}"
             else # Mod
@@ -116,8 +116,8 @@ function RunSteamCMD { #[Input: int server=0 mod=1; int id]
             fi
             break
         fi
-        if (( $updateAttempt == $STEAMCMD_ATTEMPTS )); then # Notify if failed last attempt
-            if [[ $1 == 0 ]]; then # Server
+        if (($updateAttempt == $STEAMCMD_ATTEMPTS)); then # Notify if failed last attempt
+            if [[ $1 == 0 ]]; then                        # Server
                 echo -e "\t${RED}Final attempt made! ${YELLOW}Unable to complete game server update. ${CYAN}Skipping...${NC}"
                 echo -e "\t(Please try again at a later time)"
                 sleep 3
@@ -133,11 +133,9 @@ function RunSteamCMD { #[Input: int server=0 mod=1; int id]
 # Takes a directory (string) as input, and recursively makes all files & folders lowercase.
 function ModsLowercase {
     echo -e "\n\tMaking mod ${CYAN}$1${NC} files/folders lowercase..."
-    for SRC in `find ./$1 -depth`
-    do
-        DST=`dirname "${SRC}"`/`basename "${SRC}" | tr '[A-Z]' '[a-z]'`
-        if [ "${SRC}" != "${DST}" ]
-        then
+    for SRC in $(find ./$1 -depth); do
+        DST=$(dirname "${SRC}")/$(basename "${SRC}" | tr '[A-Z]' '[a-z]')
+        if [ "${SRC}" != "${DST}" ]; then
             [ ! -e "${DST}" ] && mv -T "${SRC}" "${DST}"
         fi
     done
@@ -145,7 +143,7 @@ function ModsLowercase {
 
 # Removes duplicate items from a semicolon delimited string
 function RemoveDuplicates { #[Input: str - Output: printf of new str]
-    if [[ -n $1 ]]; then # If nothing to compare, skip to prevent extra semicolon being returned
+    if [[ -n $1 ]]; then    # If nothing to compare, skip to prevent extra semicolon being returned
         echo $1 | sed -e 's/;/\n/g' | sort -u | xargs printf '%s;'
     fi
 }
@@ -185,26 +183,26 @@ if [[ -n ${SERVERMODS} ]] && [[ ${SERVERMODS} != *\; ]]; then
 else
     allMods=${SERVERMODS}
 fi
-allMods+=$CLIENT_MODS # Add all client-side mods to the master mod list
+allMods+=$CLIENT_MODS                          # Add all client-side mods to the master mod list
 CLIENT_MODS=$(RemoveDuplicates ${CLIENT_MODS}) # Remove duplicate mods from CLIENT_MODS, if present
-allMods=$(RemoveDuplicates ${allMods}) # Remove duplicate mods from allMods, if present
-allMods=$(echo $allMods | sed -e 's/;/ /g') # Convert from string to array
+allMods=$(RemoveDuplicates ${allMods})         # Remove duplicate mods from allMods, if present
+allMods=$(echo $allMods | sed -e 's/;/ /g')    # Convert from string to array
 
 # Update everything (server and mods), if specified
 if [[ ${UPDATE_SERVER} == 1 ]]; then
     echo -e "\n${GREEN}[STARTUP]: ${CYAN}Starting checks for all updates...${NC}"
     echo -e "(It is okay to ignore any \"SDL\" and \"thread priority\" errors during this process)\n"
-    
+
     ## Update game server
     echo -e "${GREEN}[UPDATE]:${NC} Checking for game server updates with App ID: ${CYAN}${STEAMCMD_APPID}${NC}..."
-    
+
     if [[ ${VALIDATE_SERVER} == 1 ]]; then # Validate will be added as a parameter if specified
         echo -e "\t${CYAN}File validation enabled.${NC} (This may take extra time to complete)"
         validateServer="validate"
     else
         validateServer=""
     fi
-    
+
     # Determine what extra flags should be set
     if [[ -n ${STEAMCMD_EXTRA_FLAGS} ]]; then
         echo -e "\t(${YELLOW}Advanced${NC}) Extra SteamCMD flags specified: ${CYAN}${STEAMCMD_EXTRA_FLAGS}${NC}\n"
@@ -213,19 +211,18 @@ if [[ ${UPDATE_SERVER} == 1 ]]; then
         echo -e ""
         extraFlags=""
     fi
-    
+
     RunSteamCMD 0 ${STEAMCMD_APPID}
-    
+
     ## Update mods
     if [[ -n $allMods ]] && [[ ${DISABLE_MOD_UPDATES} != 1 ]]; then
         echo -e "\n${GREEN}[UPDATE]:${NC} Checking all ${CYAN}Steam Workshop mods${NC} for updates..."
-        for modID in $(echo $allMods | sed -e 's/@//g')
-        do
+        for modID in $(echo $allMods | sed -e 's/@//g'); do
             if [[ $modID =~ ^[0-9]+$ ]]; then # Only check mods that are in ID-form
                 # Get mod's latest update in epoch time from its Steam Workshop changelog page
                 latestUpdate=$(curl -sL https://steamcommunity.com/sharedfiles/filedetails/changelog/$modID | grep '<p id=' | head -1 | cut -d'"' -f2)
                 # If the update time is valid and newer than the local directory's creation date, or the mod hasn't been downloaded yet, download the mod
-                if [[ ! -d @$modID ]] || [[ ( -n $latestUpdate ) && ( $latestUpdate =~ ^[0-9]+$ ) && ( $latestUpdate > $(find @$modID | head -1 | xargs stat -c%Y) ) ]]; then
+                if [[ ! -d @$modID ]] || [[ (-n $latestUpdate) && ($latestUpdate =~ ^[0-9]+$) && ($latestUpdate > $(find @$modID | head -1 | xargs stat -c%Y)) ]]; then
                     # Get the mod's name from the Workshop page as well
                     modName=$(curl -sL https://steamcommunity.com/sharedfiles/filedetails/changelog/$modID | grep 'workshopItemTitle' | cut -d'>' -f2 | cut -d'<' -f1)
                     if [[ -z $modName ]]; then # Set default name if unavailable
@@ -239,7 +236,7 @@ if [[ ${UPDATE_SERVER} == 1 ]]; then
                     if [[ -n $latestUpdate ]] && [[ $latestUpdate =~ ^[0-9]+$ ]]; then # Notify last update date, if valid
                         echo -e "\tMod was last updated: ${CYAN}$(date -d @${latestUpdate})${NC}"
                     fi
-                    
+
                     # Delete SteamCMD appworkshop cache before running to avoid mod download failures
                     echo -e "\tClearing SteamCMD appworkshop cache..."
                     rm -f ${WORKSHOP_DIR}/appworkshop_$GAME_ID.acf
@@ -265,8 +262,7 @@ fi
 
 # Make mods lowercase, if specified
 if [[ ${MODS_LOWERCASE} == "1" ]]; then
-    for modDir in $allMods
-    do
+    for modDir in $allMods; do
         ModsLowercase $modDir
     done
 fi
@@ -274,11 +270,11 @@ fi
 # Setup NSS Wrapper for use ($NSS_WRAPPER_PASSWD and $NSS_WRAPPER_GROUP have been set by the Dockerfile)
 export USER_ID=$(id -u)
 export GROUP_ID=$(id -g)
-envsubst < /passwd.template > ${NSS_WRAPPER_PASSWD}
+envsubst </passwd.template >${NSS_WRAPPER_PASSWD}
 export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libnss_wrapper.so
 
 # Replace Startup Variables
-modifiedStartup=`eval echo $(echo ${STARTUP} | sed -e 's/{{/${/g' -e 's/}}/}/g')`
+modifiedStartup=$(eval echo $(echo ${STARTUP} | sed -e 's/{{/${/g' -e 's/}}/}/g'))
 
 # Start the Server
 echo -e "\n${GREEN}[STARTUP]:${NC} Starting server with the following startup command:"

@@ -15,15 +15,13 @@ cd /home/container || exit 1
 printf "\033[1m\033[33mcontainer@pelican~ \033[0mjava -version\n"
 java -version
 
-
 # Print Python version
-if command -v python &> /dev/null
-then
-	printf "\033[1m\033[33mcontainer@pelican~ \033[0mpython --version\n"
-	python --version
+if command -v python &>/dev/null; then
+    printf "\033[1m\033[33mcontainer@pelican~ \033[0mpython --version\n"
+    python --version
 else
-	printf "\033[1m\033[33mcontainer@pelican~ \033[0mpython3 --version\n"
-	python3 --version
+    printf "\033[1m\033[33mcontainer@pelican~ \033[0mpython3 --version\n"
+    python3 --version
 fi
 
 # Convert all of the "{{VARIABLE}}" parts of the command into the expected shell

@@ -9,7 +9,7 @@ log() {
     echo "$(date +'%Y-%m-%d %H:%M:%S') - $1" | tee -a $LOGFILE
 }
 
-install_dep(){
+install_dep() {
     log "Installing dependencies..."
     apt update && apt -y install \
         build-essential \
@@ -58,22 +58,22 @@ install_amd64_multilib() {
         exit 1
     fi
 
-    log "Multilib AMD64 installed successfully"   
+    log "Multilib AMD64 installed successfully"
 }
 
 # Function to install multilib support on arm64
 install_arm64_multilib() {
     apt -y install g++-multilib-x86-64-linux-gnu g++-aarch64-linux-gnu libc6-dev-armhf-cross
-    
+
     if [[ $? -ne 0 ]]; then
         log "Failed to install amd multilib dependency"
         exit 1
     fi
 
-    log "Multilib ARM64 installed successfully"   
+    log "Multilib ARM64 installed successfully"
 }
 
-clone_mumble(){
+clone_mumble() {
     log "Cloning the Mumble repository..."
 
     # Create the necessary directories
@@ -105,7 +105,7 @@ clone_mumble(){
     # Create and navigate to the build directory
     mkdir -p build && cd build
 
-    echo "$LATEST_TAG" > latest_tag.txt
+    echo "$LATEST_TAG" >latest_tag.txt
 
     # Run cmake with the specified options
     cmake -Dbundled-opus=OFF -Dclient=OFF -Dstatic=ON -DCMAKE_BUILD_TYPE=Release ..
@@ -117,7 +117,7 @@ clone_mumble(){
     log "Repository cloned and configured successfully"
 }
 
-build_mumble(){
+build_mumble() {
     log "Building Mumble server..."
 
     cd /usr/src/mumble/git/build

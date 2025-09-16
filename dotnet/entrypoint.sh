@@ -22,7 +22,7 @@ if [ "${GIT_ENABLED}" == "false" ] || [ "${GIT_ENABLED}" == "0" ]; then
         GIT_ADDRESS="https://${GIT_USERNAME}:${GIT_ACCESS_TOKEN}@$(echo -e ${GIT_ADDRESS} | cut -d/ -f3-)"
     fi
 
-	# Update
+    # Update
     if [ "$(ls -A /home/container)" ]; then
         echo -e "/home/container directory is not empty."
 
@@ -42,7 +42,7 @@ if [ "${GIT_ENABLED}" == "false" ] || [ "${GIT_ENABLED}" == "0" ]; then
         # If git origin matches the repo specified by user then pull
         if [ "${ORIGIN}" == "${GIT_ADDRESS}" ]; then
             echo "Pulling changes from Git."
-            git pull  && echo "Finished pulling /home/container from Git." || echo "Failed pulling /home/container from Git."
+            git pull && echo "Finished pulling /home/container from Git." || echo "Failed pulling /home/container from Git."
         fi
     else
         # No files exist in resources folder, clone
@@ -57,7 +57,7 @@ if [ "${GIT_ENABLED}" == "false" ] || [ "${GIT_ENABLED}" == "0" ]; then
     fi
 else
     echo -e "Using Git is disabled."
-fi 
+fi
 
 # set this variable, dotnet needs it even without it it reports to `dotnet --info` it can not start any aplication without this
 export DOTNET_ROOT=/usr/share/

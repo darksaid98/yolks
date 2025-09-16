@@ -7,11 +7,11 @@
 ## License: MIT License
 
 ## === CONSTANTS ===
-STEAMCMD_DIR="./steamcmd"                       # SteamCMD's directory containing steamcmd.sh
-WORKSHOP_DIR="./Steam/steamapps/workshop"       # SteamCMD's directory containing workshop downloads
-STEAMCMD_LOG="${STEAMCMD_DIR}/steamcmd.log"     # Log file for SteamCMD
-GAME_ID=107410                                  # SteamCMD ID for the Arma 3 GAME (not server). Only used for Workshop mod downloads.
-EGG_URL='https://github.com/darksaid98/eggs/tree/master/game_eggs/steamcmd_servers/arma/arma3'   # URL for Pterodactyl Egg & Info (only used as info to legacy users)
+STEAMCMD_DIR="./steamcmd"                                                                      # SteamCMD's directory containing steamcmd.sh
+WORKSHOP_DIR="./Steam/steamapps/workshop"                                                      # SteamCMD's directory containing workshop downloads
+STEAMCMD_LOG="${STEAMCMD_DIR}/steamcmd.log"                                                    # Log file for SteamCMD
+GAME_ID=107410                                                                                 # SteamCMD ID for the Arma 3 GAME (not server). Only used for Workshop mod downloads.
+EGG_URL='https://github.com/darksaid98/eggs/tree/master/game_eggs/steamcmd_servers/arma/arma3' # URL for Pterodactyl Egg & Info (only used as info to legacy users)
 
 # Color Codes
 CYAN='\033[0;36m'
@@ -36,11 +36,11 @@ function RunSteamCMD { #[Input: int server=0 mod=1 optional_mod=2; int id]
     fi
 
     updateAttempt=0
-    while (( $updateAttempt < $STEAMCMD_ATTEMPTS )); do # Loop for specified number of attempts
+    while (($updateAttempt < $STEAMCMD_ATTEMPTS)); do # Loop for specified number of attempts
         # Increment attempt counter
-        updateAttempt=$((updateAttempt+1))
+        updateAttempt=$((updateAttempt + 1))
 
-        if (( $updateAttempt > 1 )); then # Notify if not first attempt
+        if (($updateAttempt > 1)); then # Notify if not first attempt
             echo -e "\t${YELLOW}Re-Attempting download/update in 3 seconds...${NC} (Attempt ${CYAN}${updateAttempt}${NC} of ${CYAN}${STEAMCMD_ATTEMPTS}${NC})\n"
             sleep 3
         fi
@@ -103,7 +103,7 @@ function RunSteamCMD { #[Input: int server=0 mod=1 optional_mod=2; int id]
             echo -e "\t${YELLOW}(Please contact your administrator/host for support)${NC}\n"
             cp -r /tmp/dumps /home/container/dumps
             exit $steamcmdExitCode
-        else # Success!
+        else                       # Success!
             if [[ $1 == 0 ]]; then # Server
                 echo -e "\n${GREEN}[UPDATE]: Game server is up to date!${NC}"
             else # Mod
@@ -125,7 +125,7 @@ function RunSteamCMD { #[Input: int server=0 mod=1 optional_mod=2; int id]
 
                         cp $file ./keys/optional_$2_${filename}
 
-                    done;
+                    done
 
                     echo -e "\tMod with ID $2 is an optional mod. Deleting original mod download folder..."
                     rm -r ./@$2
@@ -137,8 +137,8 @@ function RunSteamCMD { #[Input: int server=0 mod=1 optional_mod=2; int id]
             fi
             break
         fi
-        if (( $updateAttempt == $STEAMCMD_ATTEMPTS )); then # Notify if failed last attempt
-            if [[ $1 == 0 ]]; then # Server
+        if (($updateAttempt == $STEAMCMD_ATTEMPTS)); then # Notify if failed last attempt
+            if [[ $1 == 0 ]]; then                        # Server
                 echo -e "\t${RED}Final attempt made! ${YELLOW}Unable to complete game server update. ${CYAN}Skipping...${NC}"
                 echo -e "\t(Please try again at a later time)"
                 sleep 3
@@ -154,11 +154,9 @@ function RunSteamCMD { #[Input: int server=0 mod=1 optional_mod=2; int id]
 # Takes a directory (string) as input, and recursively makes all files & folders lowercase.
 function ModsLowercase {
     echo -e "\n\tMaking mod ${CYAN}$1${NC} files/folders lowercase..."
-    for SRC in `find ./$1 -depth`
-    do
-        DST=`dirname "${SRC}"`/`basename "${SRC}" | tr '[A-Z]' '[a-z]'`
-        if [ "${SRC}" != "${DST}" ]
-        then
+    for SRC in $(find ./$1 -depth); do
+        DST=$(dirname "${SRC}")/$(basename "${SRC}" | tr '[A-Z]' '[a-z]')
+        if [ "${SRC}" != "${DST}" ]; then
             [ ! -e "${DST}" ] && mv -T "${SRC}" "${DST}"
         fi
     done
@@ -166,7 +164,7 @@ function ModsLowercase {
 
 # Removes duplicate items from a semicolon delimited string
 function RemoveDuplicates { #[Input: str - Output: printf of new str]
-    if [[ -n $1 ]]; then # If nothing to compare, skip to prevent extra semicolon being returned
+    if [[ -n $1 ]]; then    # If nothing to compare, skip to prevent extra semicolon being returned
         echo $1 | sed -e 's/;/\n/g' | sort -u | xargs printf '%s;'
     fi
 }
@@ -218,10 +216,10 @@ if [[ -n ${OPTIONALMODS} ]] && [[ ${OPTIONALMODS} != *\; ]]; then # Add specifie
 else
     allMods+=${OPTIONALMODS}
 fi
-allMods+=$CLIENT_MODS # Add all client-side mods to the master mod list
+allMods+=$CLIENT_MODS                          # Add all client-side mods to the master mod list
 CLIENT_MODS=$(RemoveDuplicates ${CLIENT_MODS}) # Remove duplicate mods from CLIENT_MODS, if present
-allMods=$(RemoveDuplicates ${allMods}) # Remove duplicate mods from allMods, if present
-allMods=$(echo $allMods | sed -e 's/;/ /g') # Convert from string to array
+allMods=$(RemoveDuplicates ${allMods})         # Remove duplicate mods from allMods, if present
+allMods=$(echo $allMods | sed -e 's/;/ /g')    # Convert from string to array
 
 # Update everything (server and mods), if specified
 if [[ ${UPDATE_SERVER} == 1 ]]; then
@@ -255,8 +253,7 @@ if [[ ${UPDATE_SERVER} == 1 ]]; then
     ## Update mods
     if [[ -n $allMods ]] && [[ ${DISABLE_MOD_UPDATES} != 1 ]]; then
         echo -e "\n${GREEN}[UPDATE]:${NC} Checking all ${CYAN}Steam Workshop mods${NC} for updates..."
-        for modID in $(echo $allMods | sed -e 's/@//g')
-        do
+        for modID in $(echo $allMods | sed -e 's/@//g'); do
             if [[ $modID =~ ^[0-9]+$ ]]; then # Only check mods that are in ID-form
                 # If a mod is defined in OPTIONALMODS, and is not defined in CLIENT_MODS or SERVERMODS, then treat as an optional mod
                 # Optional mods are given a different directory which is checked to see if a new update is available. This is to ensure
@@ -273,7 +270,7 @@ if [[ ${UPDATE_SERVER} == 1 ]]; then
                 latestUpdate=$(curl -sL https://steamcommunity.com/sharedfiles/filedetails/changelog/$modID | grep '<p id=' | head -1 | cut -d'"' -f2)
 
                 # If the update time is valid and newer than the local directory's creation date, or the mod hasn't been downloaded yet, download the mod
-                if [[ ! -d $modDir ]] || [[ ( -n $latestUpdate ) && ( $latestUpdate =~ ^[0-9]+$ ) && ( $latestUpdate > $(find $modDir | head -1 | xargs stat -c%Y) ) ]]; then
+                if [[ ! -d $modDir ]] || [[ (-n $latestUpdate) && ($latestUpdate =~ ^[0-9]+$) && ($latestUpdate > $(find $modDir | head -1 | xargs stat -c%Y)) ]]; then
                     # Get the mod's name from the Workshop page as well
                     modName=$(curl -sL https://steamcommunity.com/sharedfiles/filedetails/changelog/$modID | grep 'workshopItemTitle' | cut -d'>' -f2 | cut -d'<' -f1)
                     if [[ -z $modName ]]; then # Set default name if unavailable
@@ -319,10 +316,10 @@ if [[ ${UPDATE_SERVER} == 1 ]]; then
 
                     # Delete the optional mod .bikey file and directory
                     rm ${keyFile}
-                    rmdir ./@${modID}_optional 2> /dev/null
+                    rmdir ./@${modID}_optional 2>/dev/null
                 fi
             fi
-        done;
+        done
 
         echo -e "${GREEN}[UPDATE]:${NC} Steam Workshop mod update check ${GREEN}complete${NC}!"
     fi
@@ -340,8 +337,7 @@ fi
 
 # Make mods lowercase, if specified
 if [[ ${MODS_LOWERCASE} == "1" ]]; then
-    for modDir in $allMods
-    do
+    for modDir in $allMods; do
         ModsLowercase $modDir
     done
 fi
@@ -355,8 +351,7 @@ mkdir -p /home/container/serverprofile/rpt
 # Clear HC cache, if specified
 if [[ ${CLEAR_CACHE} == "1" ]]; then
     echo -e "\n${GREEN}[STARTUP]: ${CYAN}Clearing Headless Client profiles cache...${NC}"
-    for profileDir in ./serverprofile/home/*
-    do
+    for profileDir in ./serverprofile/home/*; do
         [ "$profileDir" = "./serverprofile/home/Player" ] && continue
         rm -rf $profileDir
     done
@@ -372,7 +367,7 @@ fi
 # Setup NSS Wrapper for use ($NSS_WRAPPER_PASSWD and $NSS_WRAPPER_GROUP have been set by the Dockerfile)
 export USER_ID=$(id -u)
 export GROUP_ID=$(id -g)
-envsubst < /passwd.template > ${NSS_WRAPPER_PASSWD}
+envsubst </passwd.template >${NSS_WRAPPER_PASSWD}
 
 if [[ ${SERVER_BINARY} == *"x64"* ]]; then # Check which libnss-wrapper architecture to run, based off the server binary name
     export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libnss_wrapper.so
@@ -381,16 +376,14 @@ else
 fi
 
 # Replace Startup Variables
-modifiedStartup=`eval echo $(echo ${STARTUP} | sed -e 's/{{/${/g' -e 's/}}/}/g')`
+modifiedStartup=$(eval echo $(echo ${STARTUP} | sed -e 's/{{/${/g' -e 's/}}/}/g'))
 
 # Start Headless Clients if applicable
 if [[ ${HC_NUM} > 0 ]]; then
     echo -e "\n${GREEN}[STARTUP]:${NC} Starting ${CYAN}${HC_NUM}${NC} Headless Client(s)."
-    for i in $(seq ${HC_NUM})
-    do
-        if [[ ${HC_HIDE} == "1" ]];
-        then
-            ./${SERVER_BINARY} -client -connect=127.0.0.1 -port=${SERVER_PORT} -password="${SERVER_PASSWORD}" -profiles=./serverprofile -bepath=./battleye -mod="${CLIENT_MODS}" ${STARTUP_PARAMS} > /dev/null 2>&1 &
+    for i in $(seq ${HC_NUM}); do
+        if [[ ${HC_HIDE} == "1" ]]; then
+            ./${SERVER_BINARY} -client -connect=127.0.0.1 -port=${SERVER_PORT} -password="${SERVER_PASSWORD}" -profiles=./serverprofile -bepath=./battleye -mod="${CLIENT_MODS}" ${STARTUP_PARAMS} >/dev/null 2>&1 &
         else
             ./${SERVER_BINARY} -client -connect=127.0.0.1 -port=${SERVER_PORT} -password="${SERVER_PASSWORD}" -profiles=./serverprofile -bepath=./battleye -mod="${CLIENT_MODS}" ${STARTUP_PARAMS} &
         fi
@@ -402,7 +395,7 @@ fi
 echo -e "\n${GREEN}[STARTUP]:${NC} Starting server with the following startup command:"
 echo -e "${CYAN}${modifiedStartup}${NC}\n"
 if [[ "$STARTUP_PARAMS" == *"-noLogs"* ]]; then
-	${modifiedStartup}
+    ${modifiedStartup}
 else
     ${modifiedStartup} 2>&1 | tee -a "$LOG_FILE"
 fi

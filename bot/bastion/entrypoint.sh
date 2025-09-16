@@ -30,7 +30,10 @@ echo -e "${YELLOW}:/home/container${NC} ${MODIFIED_STARTUP}"
 echo -e "${BLUE}-------------------------------------------------${NC}"
 echo -e "${YELLOW}starting MongoDB...${NC}"
 echo -e "${BLUE}-------------------------------------------------${NC}"
-mongod --fork --dbpath /home/container/mongodb/ --port 27017 --logpath /home/container/mongod.log --logRotate reopen --logappend && until nc -z -v -w5 127.0.0.1 27017; do echo 'Waiting for mongodb connection...'; sleep 5; done
+mongod --fork --dbpath /home/container/mongodb/ --port 27017 --logpath /home/container/mongod.log --logRotate reopen --logappend && until nc -z -v -w5 127.0.0.1 27017; do
+    echo 'Waiting for mongodb connection...'
+    sleep 5
+done
 
 # Run the Server
 echo -e "${BLUE}-------------------------------------------------${NC}"
