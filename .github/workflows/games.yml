@@ -16,13 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         game:
-          - altv
-          - arma3
-          - dayz
           - fivem
-          - mohaa
-          - samp
-          - source
 
     steps:
       - uses: actions/checkout@v4
@@ -42,35 +36,4 @@ jobs:
           push: true
           tags: |
             ghcr.io/darksaid98/games:${{ matrix.game }}
-  pushAll:
-    name: 'games_All:${{ matrix.game }}'
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        game:
-          - minetest
-          - mta
-          - valheim
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-        with:
-          platforms: arm64,amd64
-      - uses: docker/setup-buildx-action@v3
-        with:
-          buildkitd-flags: --debug
-      - uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: docker/build-push-action@v5
-        with:
-          context: ./games/${{ matrix.game }}
-          file: ./games/${{ matrix.game }}/Dockerfile
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-            ghcr.io/darksaid98/games:${{ matrix.game }}
+
