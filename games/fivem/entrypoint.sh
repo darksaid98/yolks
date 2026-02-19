@@ -61,4 +61,4 @@ MODIFIED_STARTUP=$(echo -e ${STARTUP} | sed -e 's/{{/${/g' -e 's/}}/}/g')
 echo -e ":/home/container$ ${MODIFIED_STARTUP}"
 
 # Run the Server
-eval "exec ${MODIFIED_STARTUP}"
+eval "exec script -q -c \"exec ${MODIFIED_STARTUP}\" /dev/null"
